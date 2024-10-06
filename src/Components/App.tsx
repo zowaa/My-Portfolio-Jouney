@@ -1,4 +1,5 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 const useDarkModeHook = (): [boolean, Dispatch<SetStateAction<boolean>>] => {
   const [darkMode, setDarkMode] = useState(() => {
@@ -23,17 +24,13 @@ const useDarkModeHook = (): [boolean, Dispatch<SetStateAction<boolean>>] => {
 const App = () => {
   const [dark, setDark] = useDarkModeHook();
 
+  function handleSwitch() {
+    setDark((x: boolean) => !x);
+  }
+
   return (
     <>
-      <button
-        type="button"
-        onClick={() => {
-          setDark((x: boolean) => !x);
-        }}
-      >
-        Change
-      </button>
-      {console.log(dark)}
+      <ThemeSwitcher handleSwitch={handleSwitch} isDark={dark} />
     </>
   );
 };
