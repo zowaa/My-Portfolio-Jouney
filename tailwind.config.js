@@ -5,5 +5,6 @@ export default {
     extend: {},
   },
   plugins: [],
+  darkMode: 'class', // manually control dark mode by adding the dark class to a parent element
 }
 

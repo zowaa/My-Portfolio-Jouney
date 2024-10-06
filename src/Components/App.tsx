@@ -1,7 +1,14 @@
 const App = () => {
   return (
     <>
-      <h1 className="text-blue-500">hiloo</h1>
+      <button
+        type="button"
+        onClick={() => {
+          document.documentElement.classList.toggle("dark");
+        }}
+      >
+        Click
+      </button>
     </>
   );
 };
