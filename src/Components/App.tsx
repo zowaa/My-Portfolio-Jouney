@@ -1,28 +1,34 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 
-const App = () => {
-  const [dark, setDark] = useState(() => {
+const useDarkModeHook = (): [boolean, Dispatch<SetStateAction<boolean>>] => {
+  const [darkMode, setDarkMode] = useState(() => {
     if (localStorage.getItem("dark-mode"))
       return localStorage.getItem("dark-mode") === "true";
-    else return true;
+    else return window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
 
   useEffect(() => {
-    if (dark) {
+    if (darkMode) {
       localStorage.setItem("dark-mode", "true");
       document.documentElement.classList.add("dark");
     } else {
       localStorage.setItem("dark-mode", "false");
       document.documentElement.classList.remove("dark");
     }
-  }, [dark]);
+  }, [darkMode]);
+
+  return [darkMode, setDarkMode];
+};
+
+const App = () => {
+  const [dark, setDark] = useDarkModeHook();
 
   return (
     <>
       <button
         type="button"
         onClick={() => {
-          setDark((x) => !x);
+          setDark((x: boolean) => !x);
         }}
       >
         Change
