@@ -30,6 +30,7 @@ const App = () => {
   useEffect(() => {
     const lng = localStorage.getItem("lng");
     if (lng) i18n.changeLanguage(lng);
+    else localStorage.setItem("lng", "en");
   }, [i18n]);
 
   function handleThemeSwitch() {
