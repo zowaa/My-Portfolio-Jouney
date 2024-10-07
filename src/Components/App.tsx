@@ -1,5 +1,7 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { useTranslation } from "react-i18next";
 import ThemeSwitcher from "./ThemeSwitcher";
+import MultiLanguage from "./MultiLanguage";
 
 const useDarkModeHook = (): [boolean, Dispatch<SetStateAction<boolean>>] => {
   const [darkMode, setDarkMode] = useState(() => {
@@ -23,14 +25,23 @@ const useDarkModeHook = (): [boolean, Dispatch<SetStateAction<boolean>>] => {
 
 const App = () => {
   const [dark, setDark] = useDarkModeHook();
+  const { t, i18n } = useTranslation();
 
-  function handleSwitch() {
+  useEffect(() => {
+    const lng = localStorage.getItem("lng");
+    if (lng) i18n.changeLanguage(lng);
+  }, [i18n]);
+
+  function handleThemeSwitch() {
     setDark((x: boolean) => !x);
   }
 
   return (
     <>
-      <ThemeSwitcher handleSwitch={handleSwitch} isDark={dark} />
+      <ThemeSwitcher handleSwitch={handleThemeSwitch} isDark={dark} />
+      <MultiLanguage />
+
+      <p>{t("welcome")}</p>
     </>
   );
 };
