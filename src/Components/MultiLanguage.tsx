@@ -10,7 +10,7 @@ const MultiLanguage = () => {
   }
   return (
     <>
-      <select value={i18n.language} onChange={handleLanguage}>
+      <select id="lang" value={i18n.language} onChange={handleLanguage}>
         <option value="en">English</option>
         <option value="fr">Francais</option>
         <option value="ar">Arabic</option>
