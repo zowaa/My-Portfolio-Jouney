@@ -2,6 +2,7 @@ import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import ThemeSwitcher from "./ThemeSwitcher";
 import MultiLanguage from "./MultiLanguage";
+import Weather from "./Weather";
 
 const useDarkModeHook = (): [boolean, Dispatch<SetStateAction<boolean>>] => {
   const [darkMode, setDarkMode] = useState(() => {
@@ -41,6 +42,7 @@ const App = () => {
     <>
       <ThemeSwitcher handleSwitch={handleThemeSwitch} isDark={dark} />
       <MultiLanguage />
+      <Weather />
 
       <p>{t("welcome")}</p>
     </>
