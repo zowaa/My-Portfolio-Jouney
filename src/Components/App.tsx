@@ -1,5 +1,6 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
+
 import ThemeSwitcher from "./ThemeSwitcher";
 import MultiLanguage from "./MultiLanguage";
 import Weather from "./Weather";
@@ -12,13 +13,8 @@ const useDarkModeHook = (): [boolean, Dispatch<SetStateAction<boolean>>] => {
   });
 
   useEffect(() => {
-    if (darkMode) {
-      localStorage.setItem("dark-mode", "true");
-      document.documentElement.classList.add("dark");
-    } else {
-      localStorage.setItem("dark-mode", "false");
-      document.documentElement.classList.remove("dark");
-    }
+    localStorage.setItem("dark-mode", darkMode.toString());
+    document.documentElement.classList.toggle("dark", darkMode);
   }, [darkMode]);
 
   return [darkMode, setDarkMode];
@@ -29,9 +25,16 @@ const App = () => {
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    const lng = localStorage.getItem("lng");
-    if (lng) i18n.changeLanguage(lng);
-    else localStorage.setItem("lng", "en");
+    const changeLanguage = async () => {
+      const lng = localStorage.getItem("lng");
+      if (lng) {
+        await i18n.changeLanguage(lng);
+      } else {
+        localStorage.setItem("lng", i18n.language);
+      }
+    };
+
+    changeLanguage();
   }, [i18n]);
 
   function handleThemeSwitch() {

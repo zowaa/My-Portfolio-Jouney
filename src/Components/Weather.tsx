@@ -1,29 +1,42 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+
+interface WeatherInfo {
+  location: { name: string };
+  current: { temp_c: number; condition: { text: string; icon: string } };
+}
 
 const Weather = () => {
-  const [dataLocation, setDataLocation] = useState({});
+  const { i18n } = useTranslation();
+  const [weatherInfo, setWeatherInfo] = useState<WeatherInfo | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+
   const ipdataAPI_key = import.meta.env.VITE_IPDATA_API;
+  const weatherAPI_key = import.meta.env.VITE_WEATHERAPI_API;
 
   useEffect(() => {
     const fetchWeather = async () => {
+      let locationData: { latitude?: number; longitude?: number } = {};
+
       setIsError(false);
       setIsLoading(true);
 
-      //fetch location
+      //fetch location with ipdata API
       try {
         const url = `https://api.ipdata.co?api-key=${ipdataAPI_key}`;
         const response = await axios.get(url);
         if (response.status === 200) {
           const data = response.data;
-          if (!data || Object.keys(data).length === 0) {
+          if (!data || !data.latitude || !data.longitude) {
             setIsError(true);
             console.log(
               `Error in location fetch: Data object Empty, no data returned`,
             );
-          } else setDataLocation(data);
+          } else {
+            locationData = data;
+          }
         } else if (response.status === 403) {
           setIsError(true);
           console.log(`Error in location fetch: Quota excessed`);
@@ -33,38 +46,49 @@ const Weather = () => {
             `Error in location fetch: Received status code ${response.status}`,
           );
         }
-      } catch (err: unknown) {
+      } catch (err) {
         setIsError(true);
-        if (axios.isAxiosError(err)) {
-          // If the error is an Axios error
-          if (err.response) {
-            // Request made, but server responded with a status code outside of 2xx
+        console.log(`Error in location fetch: ${err}`);
+      }
+
+      if (isError) {
+        setIsLoading(false);
+        return;
+      }
+
+      //fetch weather with weatherapi API
+      try {
+        const url = `https://api.weatherapi.com/v1/current.json?key=${weatherAPI_key}&q=${locationData.latitude},${locationData.longitude}&lang=${i18n.language}`;
+        const response = await axios.get(url);
+        if (response.status === 200) {
+          const data = response.data;
+          if (!data) {
+            setIsError(true);
             console.log(
-              `Error in location fetch: status: ${err.response.status}, data: ${err.response.data}`,
+              `Error in weather fetch: Data object Empty, no data returned`,
             );
-          } else if (err.request) {
-            // Request made, but no response received
-            console.log(
-              `Error in location fetch: No response received from the server, ${err.request}`,
-            );
+          } else {
+            setWeatherInfo(data);
           }
-        } else if (err instanceof Error) {
-          // A generic Error
-          console.log(
-            `Error in location fetch: Problem with the request, ${err.message}`,
-          );
+        } else if (response.status === 403) {
+          setIsError(true);
+          console.log(`Error in weather fetch: Quota excessed`);
         } else {
-          // Handle any unexpected errors
-          console.log(`Error in location fetch: Unexpected error`, err);
+          setIsError(true);
+          console.log(
+            `Error in weather fetch: Received status code ${response.status}`,
+          );
         }
+      } catch (err) {
+        setIsError(true);
+        console.log(`Error in weather fetch: ${err}`);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchWeather();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [i18n.language]);
 
   return (
     <>
@@ -73,10 +97,14 @@ const Weather = () => {
       ) : isError ? (
         <p>error</p>
       ) : (
-        <p>
-          {dataLocation.city}
-          {console.log(dataLocation)}
-        </p>
+        weatherInfo && (
+          <>
+            <p>{weatherInfo.location.name}</p>
+            <p>{weatherInfo.current.temp_c}</p>
+            <p>{weatherInfo.current.condition.text}</p>
+            <img src={weatherInfo.current.condition.icon} alt="icon" />
+          </>
+        )
       )}
     </>
   );
