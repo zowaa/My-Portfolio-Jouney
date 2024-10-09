@@ -1,5 +1,9 @@
 {
-  "welcome": "Bienvenue chere",
   "city1": "Ville1 : ",
-  "city2": "Ville traduite : "
+  "city2": "Ville traduite : ",
+  "home": "Accueil",
+  "about": "À propos",
+  "contact": "Contact",
+  "blog": "Blog",
+  "projects": "Projets"
 }

@@ -1,5 +1,9 @@
 {
-  "welcome": "Welcome darling",
   "city1": "City1 : ",
-  "city2": "City translated : "
+  "city2": "City translated : ",
+  "home": "Home",
+  "about": "About",
+  "contact": "Contact",
+  "blog": "Blog",
+  "projects": "Projects"
 }

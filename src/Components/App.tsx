@@ -1,9 +1,15 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
+import { Routes, Link, Route } from "react-router-dom";
 
 import ThemeSwitcher from "./ThemeSwitcher";
 import MultiLanguage from "./MultiLanguage";
 import Weather from "./Weather";
+import Home from "./Home";
+import Blog from "./Blog";
+import Projects from "./Projects";
+import About from "./About";
+import Contact from "./Contact";
 
 const useDarkModeHook = (): [boolean, Dispatch<SetStateAction<boolean>>] => {
   const [darkMode, setDarkMode] = useState(() => {
@@ -43,11 +49,39 @@ const App = () => {
 
   return (
     <>
-      <ThemeSwitcher handleSwitch={handleThemeSwitch} isDark={dark} />
-      <MultiLanguage />
-      <Weather />
+      <nav>
+        <ThemeSwitcher handleSwitch={handleThemeSwitch} isDark={dark} />
+        <MultiLanguage />
+        <Weather />
 
-      <p>{t("welcome")}</p>
+        <ul>
+          <li>
+            <Link to="/">{t("home")}</Link>
+          </li>
+          <li>
+            <Link to="/blog">{t("blog")}</Link>
+          </li>
+          <li>
+            <Link to="/projects">{t("projects")}</Link>
+          </li>
+          <li>
+            <Link to="/about">{t("about")}</Link>
+          </li>
+          <li>
+            <Link to="/contact">{t("contact")}</Link>
+          </li>
+        </ul>
+      </nav>
+
+      <hr />
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
     </>
   );
 };
